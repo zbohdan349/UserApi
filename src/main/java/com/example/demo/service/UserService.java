@@ -26,13 +26,13 @@ public class UserService{
     public boolean save(UserCreateReq req){
         if(!userRepository.isUserExist(req.getEmail())){
             User user = new User();
-            user.setId(counterId++);
             user.setEmail(req.getEmail());
             user.setFirstName(req.getFirstName());
             user.setLastName(req.getLastName());
             user.setPhone(req.getPhone());
             user.setAddress(req.getAddress());
             user.setBirthday(checkAge(req.getBirthday()));
+            user.setId(counterId++);
             userRepository.save(user);
             return true;
         }
