@@ -12,13 +12,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
+@TestPropertySource(properties = { "availableage=18" })
 public class MappingUtilsTest {
+
 
     @InjectMocks
     private MappingUtils mappingUtils;
@@ -42,13 +45,14 @@ public class MappingUtilsTest {
         req.setEmail("other@gmail.com");
         req.setFirstName("otherName");
         req.setLastName(null);
-        req.setBirthday(LocalDate.of(1999,1,1));
+        //req.setBirthday(LocalDate.of(1999,1,1));
     }
 
 
     @Test
     public void mappingSuccessfulTest(){
         Mockito.when(userRepository.isUserExist(Mockito.any())).thenReturn(false);
+        req.setBirthday(LocalDate.of(1999,1,1));
 
         user = mappingUtils.map(req,user);
 
@@ -60,16 +64,6 @@ public class MappingUtilsTest {
         assertEquals(user.getEmail(),req.getEmail());
     }
 
-    @Test
-    public void mappingUnSuccessfulTestWhenDateIsNotCorrect(){
-        Mockito.when(userRepository.isUserExist(Mockito.any())).thenReturn(false);
-
-        req.setBirthday(LocalDate.of(2020,1,1));
-
-        assertThrows(BadUserCreation.class,()->{
-            user = mappingUtils.map(req,user);
-        });
-    }
 
     @Test
     public void mappingUnSuccessfulTestWhenUserExist(){

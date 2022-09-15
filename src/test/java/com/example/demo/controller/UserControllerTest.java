@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.BadUserCreation;
 import com.example.demo.exception.DateException;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.model.UserCreateReq;
 import com.example.demo.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -48,6 +50,31 @@ public class UserControllerTest {
         mvc.perform(get("/users/"+1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+    @Test
+    public void deleteUser() throws Exception {
+        User user =new User();
+        user.setId(1);
+
+        given(service.deleteUserById(1)).willReturn(true);
+        mvc.perform(delete("/users/"+1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        given(service.deleteUserById(1)).willThrow(UserNotFoundException.class);
+        mvc.perform(delete("/users/"+1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+    @Test
+    public void updateUser() throws Exception {
+        User user = new User();
+        user.setId(1);
+
+        given(service.update(Mockito.any(), Mockito.any())).willReturn(true);
+        mvc.perform(put("/users/" + 1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
     @Test
     public void successfulUserCreation() throws Exception {

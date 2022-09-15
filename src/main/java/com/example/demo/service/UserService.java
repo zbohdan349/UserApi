@@ -38,11 +38,12 @@ public class UserService{
         }
         else throw new BadUserCreation("This user exist");
     }
-    public void update(UserUpdateReq req, Integer id){
+    public boolean update(UserUpdateReq req, Integer id){
         User user = userRepository.getUserById(id);
         userRepository.removeUser(user);
         user =mappingUtils.map(req,user);
         userRepository.update(user);
+        return true;
     }
 
     public Set<User> getAllUsers(){
@@ -57,8 +58,9 @@ public class UserService{
         return userRepository.getUserById(id);
     }
 
-    public void deleteUserById(Integer id){
+    public boolean deleteUserById(Integer id){
         userRepository.deleteUserById(id);
+        return true;
     }
 
     private LocalDate checkAge(LocalDate localDate){
